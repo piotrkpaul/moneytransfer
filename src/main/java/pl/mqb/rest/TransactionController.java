@@ -1,5 +1,6 @@
 package pl.mqb.rest;
 
+import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.MoneyTransfer;
 import pl.mqb.service.TransactionService;
 
@@ -19,7 +20,11 @@ public class TransactionController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response submitMoneyTransfer(MoneyTransfer trx) {
-        transactionService.transfer(trx);
+        try {
+            transactionService.transfer(trx);
+        } catch (InsufficientBalanceException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
         return Response.ok().build();
     }
 

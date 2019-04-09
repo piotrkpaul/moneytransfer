@@ -31,7 +31,7 @@ public enum TransactionService {
         class TransferExecutor {
             private void execute() {
                 if (sourceAccount.getBalance().compareTo(amount) < 0) {
-                    throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on account.");
+                    throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on the account.");
                 }
                 sourceAccount.debit(amount);
                 targetAccount.credit(amount);

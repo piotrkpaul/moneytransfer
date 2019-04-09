@@ -2,7 +2,7 @@ package pl.mqb.model;
 
 import java.math.BigDecimal;
 
-public class MoneyTransfer {
+final public class MoneyTransfer {
 
     private final String source;
     private final String target;
@@ -12,6 +12,13 @@ public class MoneyTransfer {
         this.source = source;
         this.target = target;
         this.amount = new BigDecimal(amount);
+    }
+
+    public MoneyTransfer() {
+        //default constructor added for Jackson compatibility
+        source = "";
+        target = "";
+        amount = BigDecimal.ZERO;
     }
 
     public String getSource() {
