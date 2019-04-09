@@ -21,7 +21,7 @@ public class AccountRepository {
         accounts.clear();
     }
 
-    public Account create(Account account) {
+    public Account addAccount(Account account) {
         return accounts.putIfAbsent(account.getId(), account);
     }
 

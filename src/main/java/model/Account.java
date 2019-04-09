@@ -35,10 +35,6 @@ public class Account {
     }
 
     public BigDecimal debit(BigDecimal amount) {
-        if (amount.compareTo(this.balance) > 0) {
-            throw new IllegalArgumentException(getId() + " has not enough money to complete this operation. " +
-                    "Balance: " + balance + " | Amount: " + amount);
-        }
         balance = balance.subtract(amount);
         return balance;
     }

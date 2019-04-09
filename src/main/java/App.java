@@ -12,8 +12,8 @@ public class App {
     private static void initializeTestData() {
 
         AccountRepository repository = AccountRepository.getInstance();
-        repository.create(new Account("1", "100.10"));
-        repository.create(new Account("2", "90.22"));
-        repository.create(new Account("3", "20.22"));
+        repository.addAccount(new Account("1", "100.10"));
+        repository.addAccount(new Account("2", "90.22"));
+        repository.addAccount(new Account("3", "20.22"));
     }
 }

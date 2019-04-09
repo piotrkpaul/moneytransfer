@@ -39,7 +39,7 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createNewAccount(Account account) {
-        if (repository.create(account) != null)
+        if (repository.addAccount(account) != null)
             return Response.status(Response.Status.CONFLICT)
                     .entity("Account with id " + account.getId() + " already exists.")
                     .build();

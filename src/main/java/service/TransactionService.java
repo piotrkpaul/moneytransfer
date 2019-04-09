@@ -1,6 +1,7 @@
 package service;
 
 import dao.AccountRepository;
+import error.InsufficientBalanceException;
 import model.Account;
 import model.MoneyTransfer;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public enum TransactionService {
         class Helper {
             private void transfer() {
                 if (sourceAccount.getBalance().compareTo(amount) < 0) {
-                    log.info("MoneyTransfer can't be performed due to lack of funds on account.");
+                    throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on account.");
                 }
                 sourceAccount.debit(amount);
                 targetAccount.credit(amount);
