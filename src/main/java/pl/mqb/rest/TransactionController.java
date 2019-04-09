@@ -1,7 +1,7 @@
-package rest;
+package pl.mqb.rest;
 
-import model.MoneyTransfer;
-import service.TransactionService;
+import pl.mqb.model.MoneyTransfer;
+import pl.mqb.service.TransactionService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

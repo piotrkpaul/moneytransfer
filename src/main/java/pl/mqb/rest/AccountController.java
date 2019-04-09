@@ -1,7 +1,7 @@
-package rest;
+package pl.mqb.rest;
 
-import dao.AccountRepository;
-import model.Account;
+import pl.mqb.dao.AccountRepository;
+import pl.mqb.model.Account;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

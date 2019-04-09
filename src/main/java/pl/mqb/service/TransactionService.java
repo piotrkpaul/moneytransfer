@@ -1,9 +1,9 @@
-package service;
+package pl.mqb.service;
 
-import dao.AccountRepository;
-import error.InsufficientBalanceException;
-import model.Account;
-import model.MoneyTransfer;
+import pl.mqb.dao.AccountRepository;
+import pl.mqb.error.InsufficientBalanceException;
+import pl.mqb.model.Account;
+import pl.mqb.model.MoneyTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

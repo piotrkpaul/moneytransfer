@@ -1,4 +1,4 @@
-package model;
+package pl.mqb.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;

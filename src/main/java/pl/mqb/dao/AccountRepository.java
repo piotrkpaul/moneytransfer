@@ -1,6 +1,6 @@
-package dao;
+package pl.mqb.dao;
 
-import model.Account;
+import pl.mqb.model.Account;
 
 import java.util.ArrayList;
 import java.util.List;
