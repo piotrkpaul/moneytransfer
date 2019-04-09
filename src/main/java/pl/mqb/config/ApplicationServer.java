@@ -35,7 +35,6 @@ public class ApplicationServer {
 
     public static void startServer() {
         Server server = getServer();
-
         initTestData();
 
         try {
