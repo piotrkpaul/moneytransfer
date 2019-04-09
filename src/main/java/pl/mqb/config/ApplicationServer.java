@@ -6,25 +6,23 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.mqb.dao.AccountRepository;
 import pl.mqb.model.Account;
 
 
 /**
  * Class responsible for initialization and start of Jetty with Jersey ServletContainer
- *
+ * <p>
  * default port 8080
  * default URL: http://localhost:8080
  */
 public class ApplicationServer {
 
-    private ApplicationServer(){}
-
     private static final Logger log = LoggerFactory.getLogger(ApplicationServer.class);
-
     private static final int SERVER_PORT = 8080;
     private static final String CONTEXT_PATH = "/*";
+    private ApplicationServer() {
+    }
 
     private static Server getServer() {
         ApplicationConfig config = new ApplicationConfig();
@@ -35,10 +33,10 @@ public class ApplicationServer {
         return server;
     }
 
-    public static void startServer(String arg) {
+    public static void startServer() {
         Server server = getServer();
-        if(arg!=null)
-            initTestData();
+
+        initTestData();
 
         try {
             server.start();
