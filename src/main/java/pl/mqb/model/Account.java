@@ -1,11 +1,11 @@
 package pl.mqb.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import pl.mqb.error.InsufficientBalanceException;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-@XmlRootElement
 public class Account {
 
     private final String id;
@@ -35,11 +35,24 @@ public class Account {
     }
 
     public BigDecimal debit(BigDecimal amount) {
+        validate(amount);
+
+        if (balance.compareTo(amount) < 0)
+            throw new InsufficientBalanceException("Debit can't be performed due to lack of funds on account.");
+
         balance = balance.subtract(amount);
         return balance;
     }
 
+    private void validate(BigDecimal amount) {
+        if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0) {
+            throw new IllegalArgumentException("You can only credit positive amount.");
+        }
+    }
+
     public BigDecimal credit(BigDecimal amount) {
+        validate(amount);
+
         balance = balance.add(amount);
         return balance;
     }
