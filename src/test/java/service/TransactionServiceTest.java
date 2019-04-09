@@ -1,15 +1,18 @@
-package dao;
+package service;
 
+import dao.AccountRepository;
 import error.InsufficientBalanceException;
 import model.Account;
 import model.MoneyTransfer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.TransactionService;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,6 +41,7 @@ class TransactionServiceTest {
     }
 
     @Test
+    @DisplayName("Successful money transfer test")
     void successfulTransaction() {
         log.info("Before trx: " + repository.getAll());
 
@@ -53,6 +57,35 @@ class TransactionServiceTest {
     }
 
     @Test
+    @DisplayName("Successful concurrent money transfers")
+    void concurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
+        CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
+
+            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "20.00");
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Before trx: " + repository.getAll() + " trx: " + trx);
+            transactionService.transfer(trx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] After trx: " + repository.getAll());
+        });
+
+        CompletableFuture reverseMoneyTransaction = CompletableFuture.runAsync(() -> {
+
+            MoneyTransfer oppositeTrx = new MoneyTransfer("2", "1", "10.00");
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Before trx: " + repository.getAll() + " trx: " + oppositeTrx);
+            transactionService.transfer(oppositeTrx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] After trx: " + repository.getAll());
+        });
+
+
+        CompletableFuture<Void> transactions = CompletableFuture.allOf(moneyTransaction, reverseMoneyTransaction);
+
+        transactions.get();
+
+        assertEquals(new BigDecimal("90.12"), repository.getById(ACCOUNT_ID_1).getBalance());
+        assertEquals(new BigDecimal("109.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+    }
+
+    @Test
+    @DisplayName("Unsuccessful money transfer (insufficient balance)")
     void insufficientBalanceTest() {
         final String lowBalanceAccountId = "3";
         Account lowBalanceAccount = new Account(lowBalanceAccountId, "0.12");

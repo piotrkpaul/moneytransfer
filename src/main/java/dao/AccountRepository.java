@@ -17,7 +17,8 @@ public class AccountRepository {
         return instance;
     }
 
-    void removeAll() {
+    public void removeAll() {
+        //added only for test purposes
         accounts.clear();
     }
 

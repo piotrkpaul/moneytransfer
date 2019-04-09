@@ -21,15 +21,15 @@ public enum TransactionService {
     public void transfer(final MoneyTransfer trx) {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
-        BigDecimal amount = trx.getAmount();
-        transferMoney(source, target, amount);
+
+        transferMoney(source, target, trx.getAmount());
     }
 
     private void transferMoney(final Account sourceAccount,
                                final Account targetAccount,
                                final BigDecimal amount) {
-        class Helper {
-            private void transfer() {
+        class TransferExecutor {
+            private void execute() {
                 if (sourceAccount.getBalance().compareTo(amount) < 0) {
                     throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on account.");
                 }
@@ -44,20 +44,20 @@ public enum TransactionService {
         if (sourceHash < targetHash) {
             synchronized (sourceAccount) {
                 synchronized (targetAccount) {
-                    new Helper().transfer();
+                    new TransferExecutor().execute();
                 }
             }
         } else if (sourceHash > targetHash) {
             synchronized (sourceAccount) {
                 synchronized (targetAccount) {
-                    new Helper().transfer();
+                    new TransferExecutor().execute();
                 }
             }
         } else {
             synchronized (tieLock) {
                 synchronized (sourceAccount) {
                     synchronized (targetAccount) {
-                        new Helper().transfer();
+                        new TransferExecutor().execute();
                     }
                 }
             }
