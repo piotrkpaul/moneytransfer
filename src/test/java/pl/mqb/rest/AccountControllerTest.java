@@ -8,7 +8,6 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
 import pl.mqb.TestUtils;
 import pl.mqb.model.Account;
 

@@ -1,10 +1,10 @@
 package pl.mqb.error;
 
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-@Produces
+@Provider
 public class IllegalOperationException extends RuntimeException implements ExceptionMapper<IllegalOperationException> {
 
     public IllegalOperationException() {

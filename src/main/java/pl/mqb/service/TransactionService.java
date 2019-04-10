@@ -2,6 +2,7 @@ package pl.mqb.service;
 
 import pl.mqb.dao.AccountRepository;
 import pl.mqb.dto.AccountDTO;
+import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
@@ -30,6 +31,9 @@ public class TransactionService {
     public List<AccountDTO> transfer(final MoneyTransfer trx) {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
+
+        if (source == null || target == null)
+            throw new IllegalOperationException("Account(s) doesn't exist. | Source: " + source + ", Target: " + target);
 
         return transferMoney(source, target, trx.getAmount());
     }
