@@ -21,6 +21,8 @@ public class ApplicationServer {
     private static final Logger log = LoggerFactory.getLogger(ApplicationServer.class);
     private static final int SERVER_PORT = 8080;
     private static final String CONTEXT_PATH = "/*";
+    private static Server server;
+
     private ApplicationServer() {
     }
 
@@ -34,8 +36,7 @@ public class ApplicationServer {
     }
 
     public static void startServer() {
-        Server server = getServer();
-        initTestData();
+        server = getServer();
 
         try {
             server.start();
@@ -48,12 +49,4 @@ public class ApplicationServer {
         }
     }
 
-    private static void initTestData() {
-
-        AccountRepository repository = AccountRepository.getInstance();
-        repository.addAccount(new Account("1", "100.10"));
-        repository.addAccount(new Account("2", "90.22"));
-        repository.addAccount(new Account("3", "20.22"));
-        log.info("System has been initialized with test data.");
-    }
 }

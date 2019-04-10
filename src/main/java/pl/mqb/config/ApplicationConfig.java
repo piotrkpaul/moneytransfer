@@ -3,19 +3,13 @@ package pl.mqb.config;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import javax.ws.rs.ApplicationPath;
 
-/**
- * Jersey resource configuration class.
- */
+@ApplicationPath("resources")
 class ApplicationConfig extends ResourceConfig {
 
     ApplicationConfig() {
-        registerJacksonJsonMapper();
-        packages("pl/mqb/rest");
-    }
-
-    private void registerJacksonJsonMapper() {
+        packages("pl.mqb.rest");
         register(JacksonFeature.class);
     }
-
 }
