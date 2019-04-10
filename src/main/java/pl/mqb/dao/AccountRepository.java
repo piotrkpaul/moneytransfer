@@ -29,8 +29,9 @@ public class AccountRepository {
 
     public Account addAccount(Account account) {
         Account accountExists = accounts.putIfAbsent(account.getId(), account);
-        if (accountExists != null)
+        if (accountExists != null) {
             throw new DuplicateAccountException(accountExists.getId());
+        }
 
         return getById(account.getId());
     }

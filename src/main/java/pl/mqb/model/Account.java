@@ -45,16 +45,18 @@ public class Account {
     public BigDecimal debit(BigDecimal amount) {
         validate(amount);
 
-        if (balance.compareTo(amount) < 0)
+        if (balance.compareTo(amount) < 0) {
             throw new InsufficientBalanceException("Debit can't be performed due to lack of funds on the account.");
+        }
 
         balance = balance.subtract(amount);
         return balance;
     }
 
     private void validate(BigDecimal amount) {
-        if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0)
+        if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalOperationException("You can only issue positive amount.");
+        }
     }
 
     @Override

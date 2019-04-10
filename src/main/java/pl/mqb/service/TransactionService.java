@@ -32,8 +32,9 @@ public class TransactionService {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
 
-        if (source == null || target == null)
+        if (source == null || target == null) {
             throw new IllegalOperationException("Account(s) doesn't exist. | Source: " + source + ", Target: " + target);
+        }
 
         return transferMoney(source, target, trx.getAmount());
     }
@@ -43,14 +44,14 @@ public class TransactionService {
                                            final BigDecimal amount) {
         class TransferExecutor {
             private List<AccountDTO> execute() {
-                if (sourceAccount.getBalance().compareTo(amount) < 0)
+                if (sourceAccount.getBalance().compareTo(amount) < 0) {
                     throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on the account.");
+                }
 
                 sourceAccount.debit(amount);
                 targetAccount.credit(amount);
 
-                return Collections.unmodifiableList(
-                        Arrays.asList(AccountDTO.from(sourceAccount), AccountDTO.from(targetAccount)));
+                return Collections.unmodifiableList(Arrays.asList(AccountDTO.from(sourceAccount), AccountDTO.from(targetAccount)));
             }
         }
 
