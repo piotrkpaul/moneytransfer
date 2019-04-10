@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.mqb.dao.AccountRepository;
+import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
@@ -102,6 +103,24 @@ class TransactionServiceTest {
 
         assertEquals(new BigDecimal("0.12"), repository.getById(lowBalanceAccount.getId()).getBalance());
         assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+    }
+
+    @Test
+    @DisplayName("If source account's doesnt exist (is null) throw IllegalOperationException")
+    void nonExistingSourceAccountThrowsException() {
+        final String nonExistingAccount = "999";
+        MoneyTransfer trx = new MoneyTransfer(nonExistingAccount, ACCOUNT_ID_2, "10.00");
+
+        assertThrows(IllegalOperationException.class, () -> transactionService.transfer(trx));
+    }
+
+    @Test
+    @DisplayName("If target account's doesnt exist (is null) throw IllegalOperationException")
+    void nonExistingTargetAccountThrowsException() {
+        final String nonExistingAccount = "999";
+        MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, nonExistingAccount, "10.00");
+
+        assertThrows(IllegalOperationException.class, () -> transactionService.transfer(trx));
     }
 
 }
