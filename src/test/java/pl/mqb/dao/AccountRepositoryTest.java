@@ -20,8 +20,6 @@ class AccountRepositoryTest {
 
     @Test
     void addingAccountShouldSucceed() {
-        assertEquals(0, repository.getAll().size());
-
         Account anyAccount = new Account();
 
         repository.addAccount(anyAccount);
@@ -32,8 +30,6 @@ class AccountRepositoryTest {
 
     @Test
     void addingDuplicateShouldReturnAlreadyPersistedAccount() {
-        assertEquals(0, repository.getAll().size());
-
         String accountId = "1337";
         Account testAccount = new Account(accountId, "100000");
 
@@ -49,9 +45,8 @@ class AccountRepositoryTest {
 
     @Test
     void shouldBePossibleToRemoveAllAccounts() {
-        assertEquals(0, repository.getAll().size());
-
         int numberOfAccounts = 5;
+
         insertAccountsIntoRepository(numberOfAccounts);
 
         assertEquals(numberOfAccounts, repository.getAll().size());

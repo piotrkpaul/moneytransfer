@@ -1,14 +1,14 @@
 package pl.mqb.service;
 
-import pl.mqb.dao.AccountRepository;
-import pl.mqb.error.InsufficientBalanceException;
-import pl.mqb.model.Account;
-import pl.mqb.model.MoneyTransfer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.mqb.dao.AccountRepository;
+import pl.mqb.error.InsufficientBalanceException;
+import pl.mqb.model.Account;
+import pl.mqb.model.MoneyTransfer;
 
 import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
@@ -20,14 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TransactionServiceTest {
 
     private final static Logger log = LoggerFactory.getLogger(TransactionServiceTest.class);
-    private static final String ACCOUNT_ID_2 = "2";
+
     private static final String ACCOUNT_ID_1 = "1";
+    private static final String ACCOUNT_ID_2 = "2";
+
+    private final AccountRepository repository = AccountRepository.getInstance();
+    private final TransactionService transactionService = TransactionService.getInstance();
 
     private Account accountA;
     private Account accountB;
-
-    private AccountRepository repository = AccountRepository.getInstance();
-    private TransactionService transactionService = TransactionService.INSTANCE;
 
     @BeforeEach
     void setUp() {
