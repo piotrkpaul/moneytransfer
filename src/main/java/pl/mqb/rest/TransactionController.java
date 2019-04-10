@@ -15,7 +15,7 @@ import java.util.List;
 @Path("/transactions")
 public class TransactionController {
 
-    private final TransactionService transactionService = TransactionService.INSTANCE;
+    private final TransactionService transactionService = TransactionService.getInstance();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

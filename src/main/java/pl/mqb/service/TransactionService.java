@@ -10,15 +10,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public enum TransactionService {
+public class TransactionService {
 
-    INSTANCE;
-
-     //tieLock used to prevent deadlock (in a rare case when both accounts are locked by different threads).
+    //tieLock used to prevent deadlock (in a rare case when both accounts are locked by different threads).
     private static final Object tieLock = new Object();
-    private final AccountRepository repository = AccountRepository.getInstance();
+    private static final TransactionService INSTANCE = new TransactionService(AccountRepository.getInstance());
+    private final AccountRepository repository;
 
-    public List transfer(final MoneyTransfer trx) {
+    private TransactionService(AccountRepository repository) {
+        this.repository = repository;
+    }
+
+    public static TransactionService getInstance() {
+        return INSTANCE;
+    }
+
+    public List<Account> transfer(final MoneyTransfer trx) {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
 
@@ -28,8 +35,8 @@ public enum TransactionService {
     }
 
     private void transferMoney(final Account sourceAccount,
-                               final Account targetAccount,
-                               final BigDecimal amount) {
+            final Account targetAccount,
+            final BigDecimal amount) {
         class TransferExecutor {
             private void execute() {
                 if (sourceAccount.getBalance().compareTo(amount) < 0) {

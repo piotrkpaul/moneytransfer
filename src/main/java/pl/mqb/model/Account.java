@@ -52,9 +52,8 @@ public class Account {
     }
 
     private void validate(BigDecimal amount) {
-        if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0) {
+        if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0)
             throw new IllegalArgumentException("You can only issue positive amount.");
-        }
     }
 
     @Override
