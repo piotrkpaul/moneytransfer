@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/transactions")
 public class TransactionController {
@@ -20,12 +21,13 @@ public class TransactionController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response submitMoneyTransfer(MoneyTransfer trx) {
+        List result;
         try {
-            transactionService.transfer(trx);
+            result = transactionService.transfer(trx);
         } catch (InsufficientBalanceException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        return Response.ok().build();
+        return Response.ok().entity(result).build();
     }
 
 }

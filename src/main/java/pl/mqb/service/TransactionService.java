@@ -4,25 +4,27 @@ import pl.mqb.dao.AccountRepository;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public enum TransactionService {
 
     INSTANCE;
 
-     //tieLock is used for deadlock prevention (in a rare case when both accounts are locked by different threads).
+     //tieLock used to prevent deadlock (in a rare case when both accounts are locked by different threads).
     private static final Object tieLock = new Object();
-    private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
     private final AccountRepository repository = AccountRepository.getInstance();
 
-    public void transfer(final MoneyTransfer trx) {
+    public List transfer(final MoneyTransfer trx) {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
 
         transferMoney(source, target, trx.getAmount());
+
+        return Collections.unmodifiableList(Arrays.asList(source, target));
     }
 
     private void transferMoney(final Account sourceAccount,
