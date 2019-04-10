@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.mqb.TestUtils;
-import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
 
 import javax.ws.rs.core.Application;

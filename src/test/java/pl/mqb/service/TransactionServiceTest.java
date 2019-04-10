@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.mqb.dao.AccountRepository;
+import pl.mqb.dto.AccountDTO;
 import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -61,29 +63,23 @@ class TransactionServiceTest {
     @Test
     @DisplayName("Successful concurrent money transfers")
     void concurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
-        CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
 
-            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "20.00");
-            log.info("[Thread-" + Thread.currentThread().getId() + "] Before trx: " + repository.getAll() + " trx: " + trx);
-            transactionService.transfer(trx);
-            log.info("[Thread-" + Thread.currentThread().getId() + "] After trx: " + repository.getAll());
+        CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
+            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "1.00");
+            List<AccountDTO> transfer = transactionService.transfer(trx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         });
 
         CompletableFuture reverseMoneyTransaction = CompletableFuture.runAsync(() -> {
-
-            MoneyTransfer oppositeTrx = new MoneyTransfer("2", "1", "10.00");
-            log.info("[Thread-" + Thread.currentThread().getId() + "] Before trx: " + repository.getAll() + " trx: " + oppositeTrx);
-            transactionService.transfer(oppositeTrx);
-            log.info("[Thread-" + Thread.currentThread().getId() + "] After trx: " + repository.getAll());
+            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "1.00");
+            List<AccountDTO> transfer = transactionService.transfer(oppositeTrx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         });
 
+        CompletableFuture.allOf(moneyTransaction, reverseMoneyTransaction).get();
 
-        CompletableFuture<Void> transactions = CompletableFuture.allOf(moneyTransaction, reverseMoneyTransaction);
-
-        transactions.get();
-
-        assertEquals(new BigDecimal("90.12"), repository.getById(ACCOUNT_ID_1).getBalance());
-        assertEquals(new BigDecimal("109.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+        assertEquals(new BigDecimal("100.12"), repository.getById(ACCOUNT_ID_1).getBalance());
+        assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
     }
 
     @Test
