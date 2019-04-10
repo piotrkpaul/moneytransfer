@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 
 
 @Path("/accounts")
@@ -21,7 +22,7 @@ public class AccountController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllAccounts() {
-        return Response.ok(repository.getAll()).build();
+        return Response.ok(Collections.unmodifiableCollection(repository.getAll())).build();
     }
 
     @GET

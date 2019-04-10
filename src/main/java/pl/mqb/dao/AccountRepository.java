@@ -2,8 +2,7 @@ package pl.mqb.dao;
 
 import pl.mqb.model.Account;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AccountRepository {
@@ -30,7 +29,7 @@ public class AccountRepository {
         return accounts.get(id);
     }
 
-    public List<Account> getAll() {
-        return new ArrayList<>(accounts.values());
+    public Collection<Account> getAll() {
+        return accounts.values();
     }
 }

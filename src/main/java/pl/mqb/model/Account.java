@@ -34,6 +34,13 @@ public class Account {
         return balance;
     }
 
+    public BigDecimal credit(BigDecimal amount) {
+        validate(amount);
+
+        balance = balance.add(amount);
+        return balance;
+    }
+
     public BigDecimal debit(BigDecimal amount) {
         validate(amount);
 
@@ -46,15 +53,8 @@ public class Account {
 
     private void validate(BigDecimal amount) {
         if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0) {
-            throw new IllegalArgumentException("You can only credit positive amount.");
+            throw new IllegalArgumentException("You can only issue positive amount.");
         }
-    }
-
-    public BigDecimal credit(BigDecimal amount) {
-        validate(amount);
-
-        balance = balance.add(amount);
-        return balance;
     }
 
     @Override
