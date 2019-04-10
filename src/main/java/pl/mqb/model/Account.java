@@ -1,5 +1,6 @@
 package pl.mqb.model;
 
+import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 
 import java.math.BigDecimal;
@@ -45,7 +46,7 @@ public class Account {
         validate(amount);
 
         if (balance.compareTo(amount) < 0)
-            throw new InsufficientBalanceException("Debit can't be performed due to lack of funds on account.");
+            throw new InsufficientBalanceException("Debit can't be performed due to lack of funds on the account.");
 
         balance = balance.subtract(amount);
         return balance;
@@ -53,7 +54,7 @@ public class Account {
 
     private void validate(BigDecimal amount) {
         if (Objects.isNull(amount) || BigDecimal.ZERO.compareTo(amount) > 0)
-            throw new IllegalArgumentException("You can only issue positive amount.");
+            throw new IllegalOperationException("You can only issue positive amount.");
     }
 
     @Override

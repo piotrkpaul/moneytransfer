@@ -1,6 +1,7 @@
 package pl.mqb.service;
 
 import pl.mqb.dao.AccountRepository;
+import pl.mqb.dto.AccountDTO;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
 import pl.mqb.model.MoneyTransfer;
@@ -12,9 +13,10 @@ import java.util.List;
 
 public class TransactionService {
 
-    //tieLock used to prevent deadlock (in a rare case when both accounts are locked by different threads).
+    //tieLock used to prevent deadlock (in a rare case when both accounts has the same hashcode).
     private static final Object tieLock = new Object();
     private static final TransactionService INSTANCE = new TransactionService(AccountRepository.getInstance());
+
     private final AccountRepository repository;
 
     private TransactionService(AccountRepository repository) {
@@ -25,25 +27,26 @@ public class TransactionService {
         return INSTANCE;
     }
 
-    public List<Account> transfer(final MoneyTransfer trx) {
+    public List<AccountDTO> transfer(final MoneyTransfer trx) {
         Account source = repository.getById(trx.getSource());
         Account target = repository.getById(trx.getTarget());
 
-        transferMoney(source, target, trx.getAmount());
-
-        return Collections.unmodifiableList(Arrays.asList(source, target));
+        return transferMoney(source, target, trx.getAmount());
     }
 
-    private void transferMoney(final Account sourceAccount,
-            final Account targetAccount,
-            final BigDecimal amount) {
+    private List<AccountDTO> transferMoney(final Account sourceAccount,
+                                           final Account targetAccount,
+                                           final BigDecimal amount) {
         class TransferExecutor {
-            private void execute() {
-                if (sourceAccount.getBalance().compareTo(amount) < 0) {
+            private List<AccountDTO> execute() {
+                if (sourceAccount.getBalance().compareTo(amount) < 0)
                     throw new InsufficientBalanceException("Money Transfer can't be performed due to lack of funds on the account.");
-                }
+
                 sourceAccount.debit(amount);
                 targetAccount.credit(amount);
+
+                return Collections.unmodifiableList(
+                        Arrays.asList(AccountDTO.from(sourceAccount), AccountDTO.from(targetAccount)));
             }
         }
 
@@ -53,20 +56,20 @@ public class TransactionService {
         if (sourceHash < targetHash) {
             synchronized (sourceAccount) {
                 synchronized (targetAccount) {
-                    new TransferExecutor().execute();
+                    return new TransferExecutor().execute();
                 }
             }
         } else if (sourceHash > targetHash) {
             synchronized (sourceAccount) {
                 synchronized (targetAccount) {
-                    new TransferExecutor().execute();
+                    return new TransferExecutor().execute();
                 }
             }
         } else {
             synchronized (tieLock) {
                 synchronized (sourceAccount) {
                     synchronized (targetAccount) {
-                        new TransferExecutor().execute();
+                        return new TransferExecutor().execute();
                     }
                 }
             }

@@ -8,6 +8,7 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import pl.mqb.TestUtils;
 import pl.mqb.model.Account;
 
@@ -21,8 +22,8 @@ import static org.hamcrest.CoreMatchers.is;
 public class AccountControllerTest extends JerseyTest {
 
 
-    public static final String ID = "id";
-    public static final String BALANCE = "balance";
+    private static final String ID = "id";
+    private static final String BALANCE = "balance";
 
     @BeforeClass
     public static void configureRestAssured() {
@@ -74,17 +75,6 @@ public class AccountControllerTest extends JerseyTest {
                 .then()
                     .body(ID, equalTo("4"))
                     .body(BALANCE, equalTo(5.0f));
-    }
-
-    @Test
-    public void whenAddingDuplicatedAccount_shouldReturn_409_Conflict() {
-        Account newAccount = new Account("3", "1.0");
-
-        given().contentType("application/json").body(newAccount)
-                .when()
-                    .post("/accounts")
-                .then()
-                    .statusCode(409);
     }
 
     @Override

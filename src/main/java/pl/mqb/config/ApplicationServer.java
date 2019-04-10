@@ -6,8 +6,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.mqb.dao.AccountRepository;
-import pl.mqb.model.Account;
 
 
 /**
@@ -21,10 +19,6 @@ public class ApplicationServer {
     private static final Logger log = LoggerFactory.getLogger(ApplicationServer.class);
     private static final int SERVER_PORT = 8080;
     private static final String CONTEXT_PATH = "/*";
-    private static Server server;
-
-    private ApplicationServer() {
-    }
 
     private static Server getServer() {
         ApplicationConfig config = new ApplicationConfig();
@@ -36,8 +30,7 @@ public class ApplicationServer {
     }
 
     public static void startServer() {
-        server = getServer();
-
+        Server server = getServer();
         try {
             server.start();
             server.join();
@@ -48,5 +41,4 @@ public class ApplicationServer {
             server.destroy();
         }
     }
-
 }

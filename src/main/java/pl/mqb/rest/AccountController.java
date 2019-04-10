@@ -3,12 +3,7 @@ package pl.mqb.rest;
 import pl.mqb.dao.AccountRepository;
 import pl.mqb.model.Account;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
@@ -40,11 +35,7 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createNewAccount(Account account) {
-        if (repository.addAccount(account) != null)
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("Account with id " + account.getId() + " already exists.")
-                    .build();
-
+        repository.addAccount(account);
         return Response.ok(account).build();
     }
 

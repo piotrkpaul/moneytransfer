@@ -9,7 +9,7 @@ import javax.ws.rs.ApplicationPath;
 class ApplicationConfig extends ResourceConfig {
 
     ApplicationConfig() {
-        packages("pl.mqb.rest");
+        packages("pl.mqb");
         register(JacksonFeature.class);
     }
 }

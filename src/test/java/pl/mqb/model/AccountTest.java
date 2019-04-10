@@ -1,6 +1,8 @@
 package pl.mqb.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 
 import java.math.BigDecimal;
@@ -11,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AccountTest {
 
     @Test
+    @DisplayName("It's possible to debit an account")
     void successfulAccountDebit() {
         Account testAccount = new Account("100.10");
 
@@ -21,6 +24,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("It's possible to debit to zero")
     void successfulDebitToZero() {
         Account testAccount = new Account("100");
 
@@ -32,6 +36,7 @@ class AccountTest {
 
 
     @Test
+    @DisplayName("Debit below zero throws InsufficientBalanceException")
     void accountDebitBelowLimitShouldThrowException() {
         Account testAccount = new Account("100");
 
@@ -39,20 +44,23 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("It's not possible to pass negative debit value - throws IllegalOperationException")
     void negativeDebitShouldThrowException() {
         Account testAccount = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> testAccount.debit(new BigDecimal("-30.28")));
+        assertThrows(IllegalOperationException.class, () -> testAccount.debit(new BigDecimal("-30.28")));
     }
 
     @Test
+    @DisplayName("It's not possible to pass null as debit value - throws IllegalOperationException")
     void nullDebitShouldThrowException() {
         Account testAccount = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> testAccount.debit(null));
+        assertThrows(IllegalOperationException.class, () -> testAccount.debit(null));
     }
 
     @Test
+    @DisplayName("It's possible to credit an account")
     void successfulAccountCredit() {
         Account testAccount = new Account("50.12");
 
@@ -63,18 +71,18 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("It's not possible to pass negative credit value - throws IllegalOperationException")
     void negativeCreditShouldThrowException() {
         Account testAccount = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> testAccount.credit(new BigDecimal("-30.28")));
+        assertThrows(IllegalOperationException.class, () -> testAccount.credit(new BigDecimal("-30.28")));
     }
 
     @Test
+    @DisplayName("It's not possible to pass null credit value - throws IllegalOperationException")
     void nullCreditShouldThrowException() {
         Account testAccount = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> testAccount.credit(null));
+        assertThrows(IllegalOperationException.class, () -> testAccount.credit(null));
     }
-
-
 }

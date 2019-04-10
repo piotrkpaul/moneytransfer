@@ -15,7 +15,7 @@ final public class MoneyTransfer {
     }
 
     public MoneyTransfer() {
-        //default constructor added for Jackson compatibility
+        //default constructor added for jaxb compatibility
         source = "";
         target = "";
         amount = BigDecimal.ZERO;
@@ -35,10 +35,8 @@ final public class MoneyTransfer {
 
     @Override
     public String toString() {
-        return "MoneyTransfer{" +
-                "sourceAccountId='" + source + '\'' +
-                ", targetAccountId='" + target + '\'' +
-                ", amount=" + amount +
-                '}';
+        return "MoneyTransfer | amount=" + amount + " " +
+                "from sourceAccount='" + source + '\'' +
+                "to targetAccount='" + target;
     }
 }
