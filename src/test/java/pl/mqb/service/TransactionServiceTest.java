@@ -16,6 +16,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,8 +59,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Successful concurrent money transfers")
-    void concurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
+    @DisplayName("Successful concurrent money transfers - two threads")
+    void simpleConcurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
         CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
             MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "1.00");
             List<AccountDTO> transfer = transactionService.transfer(trx);
@@ -71,6 +74,36 @@ class TransactionServiceTest {
         });
 
         CompletableFuture.allOf(moneyTransaction, reverseMoneyTransaction).get();
+
+        assertEquals(new BigDecimal("100.12"), repository.getById(ACCOUNT_ID_1).getBalance());
+        assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+    }
+
+    @Test
+    @DisplayName("Successful concurrent money transfers - two hundred threads")
+    void concurrentSuccessfulTransactions() throws InterruptedException {
+
+        Runnable transferFromOneToTwo = () -> {
+            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "0.45");
+            List<AccountDTO> transfer = transactionService.transfer(trx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
+        };
+
+        Runnable transferFromTwoToOne = () -> {
+            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "0.45");
+            List<AccountDTO> transfer = transactionService.transfer(oppositeTrx);
+            log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
+        };
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for(int i=0; i<100; i++) {
+            executorService.submit(transferFromOneToTwo);
+            executorService.submit(transferFromTwoToOne);
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(10, TimeUnit.SECONDS);
 
         assertEquals(new BigDecimal("100.12"), repository.getById(ACCOUNT_ID_1).getBalance());
         assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());

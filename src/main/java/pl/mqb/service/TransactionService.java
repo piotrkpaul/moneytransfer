@@ -40,8 +40,8 @@ public class TransactionService {
     }
 
     private List<AccountDTO> transferMoney(final Account sourceAccount,
-                                           final Account targetAccount,
-                                           final BigDecimal amount) {
+            final Account targetAccount,
+            final BigDecimal amount) {
         class TransferExecutor {
             private List<AccountDTO> execute() {
                 if (sourceAccount.getBalance().compareTo(amount) < 0) {
@@ -65,8 +65,8 @@ public class TransactionService {
                 }
             }
         } else if (sourceHash > targetHash) {
-            synchronized (sourceAccount) {
-                synchronized (targetAccount) {
+            synchronized (targetAccount) {
+                synchronized (sourceAccount) {
                     return new TransferExecutor().execute();
                 }
             }
