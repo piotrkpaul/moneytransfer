@@ -13,6 +13,11 @@ Application may be started from standalone jar:
 ```sh
 java -jar moneytransfer-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
+or as a maven goal
+
+```sh
+mvn exec:java
+```
 ## Account API - `/accounts`
 
 **GET** - retrieves all accounts from database
