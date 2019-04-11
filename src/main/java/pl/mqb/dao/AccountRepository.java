@@ -4,14 +4,15 @@ import pl.mqb.error.DuplicateAccountException;
 import pl.mqb.model.Account;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AccountRepository {
 
     private static final AccountRepository INSTANCE = new AccountRepository(new ConcurrentHashMap<>());
-    private final ConcurrentHashMap<String, Account> accounts;
+    private final Map<String, Account> accounts;
 
-    private AccountRepository(ConcurrentHashMap<String, Account> accounts) {
+    private AccountRepository(Map<String, Account> accounts) {
         this.accounts = accounts;
     }
 
