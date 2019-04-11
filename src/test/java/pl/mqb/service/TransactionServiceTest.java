@@ -47,14 +47,9 @@ class TransactionServiceTest {
     @Test
     @DisplayName("Successful money transfer test")
     void successfulTransaction() {
-        log.info("Before trx: " + repository.getAll());
-
         MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "10.00");
-        log.info("Trx details: " + trx);
 
         transactionService.transfer(trx);
-
-        log.info("After trx: " + repository.getAll());
 
         assertEquals(new BigDecimal("90.12"), repository.getById(accountA.getId()).getBalance());
         assertEquals(new BigDecimal("109.23"), repository.getById(accountB.getId()).getBalance());
@@ -63,7 +58,6 @@ class TransactionServiceTest {
     @Test
     @DisplayName("Successful concurrent money transfers")
     void concurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
-
         CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
             MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "1.00");
             List<AccountDTO> transfer = transactionService.transfer(trx);
@@ -89,13 +83,9 @@ class TransactionServiceTest {
         Account lowBalanceAccount = new Account(lowBalanceAccountId, "0.12");
         repository.addAccount(lowBalanceAccount);
 
-        log.info("Before trx: " + repository.getAll());
         MoneyTransfer trx = new MoneyTransfer(lowBalanceAccountId, ACCOUNT_ID_2, "10.00");
-        log.info("Trx: " + trx);
 
         assertThrows(InsufficientBalanceException.class, () -> transactionService.transfer(trx));
-
-        log.info("After trx: " + repository.getAll());
 
         assertEquals(new BigDecimal("0.12"), repository.getById(lowBalanceAccount.getId()).getBalance());
         assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
@@ -118,5 +108,4 @@ class TransactionServiceTest {
 
         assertThrows(IllegalOperationException.class, () -> transactionService.transfer(trx));
     }
-
 }
