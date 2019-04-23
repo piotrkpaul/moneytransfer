@@ -1,4 +1,4 @@
-package pl.mqb.model;
+package pl.mqb.dto;
 
 import java.math.BigDecimal;
 

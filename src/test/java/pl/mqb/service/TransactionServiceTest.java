@@ -10,7 +10,7 @@ import pl.mqb.dto.AccountDTO;
 import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
-import pl.mqb.model.MoneyTransfer;
+import pl.mqb.dto.MoneyTransfer;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -62,21 +62,21 @@ class TransactionServiceTest {
     @DisplayName("Successful concurrent money transfers - two threads")
     void simpleConcurrentSuccessfulTransactions() throws ExecutionException, InterruptedException {
         CompletableFuture moneyTransaction = CompletableFuture.runAsync(() -> {
-            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "1.00");
+            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "10.00");
             List<AccountDTO> transfer = transactionService.transfer(trx);
             log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         });
 
         CompletableFuture reverseMoneyTransaction = CompletableFuture.runAsync(() -> {
-            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "1.00");
+            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "20.00");
             List<AccountDTO> transfer = transactionService.transfer(oppositeTrx);
             log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         });
 
         CompletableFuture.allOf(moneyTransaction, reverseMoneyTransaction).get();
 
-        assertEquals(new BigDecimal("100.12"), repository.getById(ACCOUNT_ID_1).getBalance());
-        assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+        assertEquals(new BigDecimal("110.12"), repository.getById(ACCOUNT_ID_1).getBalance());
+        assertEquals(new BigDecimal("89.23"), repository.getById(ACCOUNT_ID_2).getBalance());
     }
 
     @Test
@@ -84,13 +84,13 @@ class TransactionServiceTest {
     void concurrentSuccessfulTransactions() throws InterruptedException {
 
         Runnable transferFromOneToTwo = () -> {
-            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "0.45");
+            MoneyTransfer trx = new MoneyTransfer(ACCOUNT_ID_1, ACCOUNT_ID_2, "0.6");
             List<AccountDTO> transfer = transactionService.transfer(trx);
             log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         };
 
         Runnable transferFromTwoToOne = () -> {
-            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "0.45");
+            MoneyTransfer oppositeTrx = new MoneyTransfer(ACCOUNT_ID_2, ACCOUNT_ID_1, "0.3");
             List<AccountDTO> transfer = transactionService.transfer(oppositeTrx);
             log.info("[Thread-" + Thread.currentThread().getId() + "] Result: " + transfer);
         };
@@ -105,8 +105,8 @@ class TransactionServiceTest {
         executorService.shutdown();
         executorService.awaitTermination(10, TimeUnit.SECONDS);
 
-        assertEquals(new BigDecimal("100.12"), repository.getById(ACCOUNT_ID_1).getBalance());
-        assertEquals(new BigDecimal("99.23"), repository.getById(ACCOUNT_ID_2).getBalance());
+        assertEquals(new BigDecimal("70.12"), repository.getById(ACCOUNT_ID_1).getBalance());
+        assertEquals(new BigDecimal("129.23"), repository.getById(ACCOUNT_ID_2).getBalance());
     }
 
     @Test

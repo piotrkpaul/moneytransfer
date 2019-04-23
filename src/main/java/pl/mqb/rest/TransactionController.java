@@ -1,7 +1,7 @@
 package pl.mqb.rest;
 
 import pl.mqb.dto.AccountDTO;
-import pl.mqb.model.MoneyTransfer;
+import pl.mqb.dto.MoneyTransfer;
 import pl.mqb.service.TransactionService;
 
 import javax.ws.rs.Consumes;

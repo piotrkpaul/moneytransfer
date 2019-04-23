@@ -5,7 +5,7 @@ import pl.mqb.dto.AccountDTO;
 import pl.mqb.error.IllegalOperationException;
 import pl.mqb.error.InsufficientBalanceException;
 import pl.mqb.model.Account;
-import pl.mqb.model.MoneyTransfer;
+import pl.mqb.dto.MoneyTransfer;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
